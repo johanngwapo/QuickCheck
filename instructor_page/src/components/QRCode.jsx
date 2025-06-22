@@ -2,7 +2,7 @@ import React from 'react';
 import { Avatar } from '@mui/material';
 import { green } from '@mui/material/colors'; 
 
-function Kyuare() {
+function QRCode() {
   return (
     <Avatar
       src="qr_pic.png"
@@ -12,4 +12,4 @@ function Kyuare() {
   );
 }
 
-export default Kyuare;
+export default QRCode;
