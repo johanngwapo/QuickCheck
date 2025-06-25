@@ -1,28 +1,29 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import Image from "../assets/image.png";
 import Logo from "../assets/logo.png";
-import QuickCheck from "../assets/quickcheck_logo.png"
+import QuickCheck from "../assets/quickcheck_logo.png";
 import GoogleSvg from "../assets/icons8-google.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import "./css/login.css";
 
-
-const Login = () => {
+const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    const hardcodedEmail = "admin@example.com";
-    const hardcodedPassword = "123456";
-
-    if (email === hardcodedEmail && password === hardcodedPassword) {
-      navigate("/landing");
-    } else {
-      alert("Invalid credentials!");
+  const handleRegister = (e) => {
+    e.preventDefault();
+    if (password !== confirmPassword) {
+      alert("Passwords do not match!");
+      return;
     }
+    
+    alert("Registration successful!");
+    navigate("/login");
   };
 
   return (
@@ -36,14 +37,22 @@ const Login = () => {
             <img src={Logo} alt="" />
           </div>
           <div className="login-center">
-            <h2>Welcome back!</h2>
-            <p>Please enter your details</p>
-            <form>
+            <h2>Create your account</h2>
+            <p>Please fill in your details</p>
+            <form onSubmit={handleRegister}>
+              <input
+                type="text"
+                placeholder="Full Name"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                required
+              />
               <input
                 type="email"
                 placeholder="Email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
+                required
               />
               <div className="pass-input-div">
                 <input
@@ -51,6 +60,7 @@ const Login = () => {
                   placeholder="Password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
+                  required
                 />
                 {showPassword ? (
                   <FaEyeSlash onClick={() => setShowPassword(false)} />
@@ -58,33 +68,33 @@ const Login = () => {
                   <FaEye onClick={() => setShowPassword(true)} />
                 )}
               </div>
-
-              <div className="login-center-options">
-                <div className="remember-div">
-                  <input type="checkbox" id="remember-checkbox" />
-                  <label htmlFor="remember-checkbox">
-                    Remember for 30 days
-                  </label>
-                </div>
-                <a href="#" className="forgot-pass-link">
-                  Forgot password?
-                </a>
+              <div className="pass-input-div">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Confirm Password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+                {showConfirmPassword ? (
+                  <FaEyeSlash onClick={() => setShowConfirmPassword(false)} />
+                ) : (
+                  <FaEye onClick={() => setShowConfirmPassword(true)} />
+                )}
               </div>
               <div className="login-center-buttons">
-                <button type="button" className="main-btn" onClick={handleLogin}>
-                  Log In
+                <button type="submit" className="main-btn">
+                  Sign Up
                 </button>
                 <button type="button">
                   <img src={GoogleSvg} alt="" />
-                  Log In with Google
+                  Sign Up with Google
                 </button>
               </div>
             </form>
           </div>
-
           <p className="login-bottom-p">
-            Don't have an account?{" "}
-            <a href="#" onClick={() => navigate("/register")}>Sign Up</a>
+            Already have an account? <a href="#" onClick={() => navigate("/login")}>Log In</a>
           </p>
         </div>
       </div>
@@ -92,4 +102,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
