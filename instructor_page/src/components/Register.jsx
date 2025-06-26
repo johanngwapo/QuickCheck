@@ -5,6 +5,7 @@ import QuickCheck from "../assets/quickcheck_logo.png";
 import GoogleSvg from "../assets/icons8-google.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import "./css/login.css";
+import axios from "axios";
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -15,16 +16,28 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = (e) => {
-    e.preventDefault();
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
-      return;
-    }
-    
+  const handleRegister = async (e) => {
+  e.preventDefault();
+  if (password !== confirmPassword) {
+    alert("Passwords do not match!");
+    return;
+  }
+
+  try {
+    const response = await axios.post("http://localhost:8080/api/users/register", {
+      fullName: name,
+      email,
+      password,
+    });
+
+    console.log("Registered user:", response.data);
     alert("Registration successful!");
     navigate("/login");
-  };
+  } catch (error) {
+    console.error("Registration failed:", error);
+    alert("Registration failed. Please try again.");
+  }
+};
 
   return (
     <div className="login-main">
@@ -94,7 +107,10 @@ const Register = () => {
             </form>
           </div>
           <p className="login-bottom-p">
-            Already have an account? <a href="#" onClick={() => navigate("/login")}>Log In</a>
+            Already have an account?{" "}
+            <a href="#" onClick={() => navigate("/login")}>
+              Log In
+            </a>
           </p>
         </div>
       </div>
