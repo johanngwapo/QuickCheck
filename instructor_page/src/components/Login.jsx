@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import Teacher from "../assets/teacher.jpeg";
+import TeacherImage from "../assets/instructor.jpg";
 import Logo from "../assets/logo.png";
 import QuickCheck from "../assets/quickcheck_logo.png";
 import GoogleSvg from "../assets/icons8-google.svg";
@@ -41,8 +41,11 @@ const Login = () => {
   return (
     <div className="login-main">
   <div className="login-left">
-    <div className="login-left-bg" />
-        <img src={QuickCheck} alt="QuickCheck Logo" />
+    <div
+    className="login-left-bg"
+    style={{ backgroundImage: `url(${TeacherImage})` }}
+  />
+    <img src={QuickCheck} alt="QuickCheck Logo" className="quickcheck-logo" />
   </div>
 
       <div className="login-right">
