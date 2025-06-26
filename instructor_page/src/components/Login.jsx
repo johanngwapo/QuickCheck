@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import Teacher from "../assets/teacher.jpeg";
 import Logo from "../assets/logo.png";
 import QuickCheck from "../assets/quickcheck_logo.png";
 import GoogleSvg from "../assets/icons8-google.svg";
@@ -39,9 +40,10 @@ const Login = () => {
 
   return (
     <div className="login-main">
-      <div className="login-left">
+  <div className="login-left">
+    <div className="login-left-bg" />
         <img src={QuickCheck} alt="QuickCheck Logo" />
-      </div>
+  </div>
 
       <div className="login-right">
         <div className="login-right-container">
