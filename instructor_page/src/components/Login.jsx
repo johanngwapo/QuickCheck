@@ -15,20 +15,27 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    axios.post("http://localhost:8080/api/users/login", { email, password })
-      .then((res) => {
-        alert("Login successful!");
-        setEmail("");
-        setPassword("");
+  axios.post("http://localhost:8080/api/users/login", { email, password })
+    .then((res) => {
+      alert("Login successful!");
+      setEmail("");
+      setPassword("");
+
+      // Redirect based on email
+      if (email.includes("@admin")) {
+        navigate("/admin"); // Change this to your admin page route
+      } else {
         navigate("/landing");
-      })
-      .catch((err) => {
-        alert("Invalid credentials!");
-        console.error("Login error:", err);
-      });
-  };
+      }
+    })
+    .catch((err) => {
+      alert("Invalid credentials!");
+      console.error("Login error:", err);
+    });
+};
+
 
   return (
     <div className="login-main">
