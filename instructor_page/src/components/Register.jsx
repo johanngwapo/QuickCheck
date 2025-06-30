@@ -6,6 +6,7 @@ import GoogleSvg from "../assets/icons8-google.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import "./css/login.css";
 import axios from "axios";
+import TeacherImage from "../assets/instructor.jpg"; 
 
 const Register = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -42,8 +43,13 @@ const Register = () => {
   return (
     <div className="login-main">
       <div className="login-left">
-        <img src={QuickCheck} alt="" />
+        <div
+        className="login-left-bg"
+        style={{ backgroundImage: `url(${TeacherImage})` }}
+      />
+        <img src={QuickCheck} alt="QuickCheck Logo" className="quickcheck-logo" />
       </div>
+
       <div className="login-right">
         <div className="login-right-container">
           <div className="login-logo">

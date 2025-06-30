@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import TeacherImage from "../assets/instructor.jpg";
 import Logo from "../assets/logo.png";
 import QuickCheck from "../assets/quickcheck_logo.png";
 import GoogleSvg from "../assets/icons8-google.svg";
@@ -15,26 +16,37 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleLogin = (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    axios.post("http://localhost:8080/api/users/login", { email, password })
-      .then((res) => {
-        alert("Login successful!");
-        setEmail("");
-        setPassword("");
+  axios.post("http://localhost:8080/api/users/login", { email, password })
+    .then((res) => {
+      alert("Login successful!");
+      setEmail("");
+      setPassword("");
+
+      // Redirect based on email
+      if (email.includes("@admin")) {
+        navigate("/admin"); // Change this to your admin page route
+      } else {
         navigate("/landing");
-      })
-      .catch((err) => {
-        alert("Invalid credentials!");
-        console.error("Login error:", err);
-      });
-  };
+      }
+    })
+    .catch((err) => {
+      alert("Invalid credentials!");
+      console.error("Login error:", err);
+    });
+};
+
 
   return (
     <div className="login-main">
-      <div className="login-left">
-        <img src={QuickCheck} alt="QuickCheck Logo" />
-      </div>
+  <div className="login-left">
+    <div
+    className="login-left-bg"
+    style={{ backgroundImage: `url(${TeacherImage})` }}
+  />
+    <img src={QuickCheck} alt="QuickCheck Logo" className="quickcheck-logo" />
+  </div>
 
       <div className="login-right">
         <div className="login-right-container">
