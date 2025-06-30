@@ -3,6 +3,10 @@ import axios from "axios";
 import QRCode from "./QRCode";
 import AvatarList from "./AvatarList";
 import Box from "@mui/material/Box";
+import * as XLSX from "xlsx";
+import { saveAs } from "file-saver";
+import { FaFileImport, FaFileExport } from "react-icons/fa";
+
 import "./css/landingPage.css"; 
 
 const LandingPage = () => {
@@ -60,12 +64,79 @@ const LandingPage = () => {
       .catch((err) => console.error("Update error:", err));
   };
 
+  const handleExportExcel = () => {
+  const worksheetData = students.map((student) => ({
+    Name: student.name,
+    Email: student.email,
+    Course: student.course,
+    "Student No": student.studentNo,
+  }));
+
+  const worksheet = XLSX.utils.json_to_sheet(worksheetData);
+  const workbook = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(workbook, worksheet, "Students");
+
+  const excelBuffer = XLSX.write(workbook, { bookType: "xlsx", type: "array" });
+  const fileData = new Blob([excelBuffer], { type: "application/octet-stream" });
+  saveAs(fileData, "students.xlsx");
+};
+
+const handleImport = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = function (event) {
+    const data = new Uint8Array(event.target.result);
+    const workbook = XLSX.read(data, { type: "array" });
+
+    const sheetName = workbook.SheetNames[0];
+    const worksheet = workbook.Sheets[sheetName];
+    const jsonData = XLSX.utils.sheet_to_json(worksheet);
+
+    const newStudents = jsonData.map((row) => ({
+      name: row["Name"] || "",
+      email: row["Email"] || "",
+      course: row["Course"] || "",
+      studentNo: row["Student No"] || "",
+    }));
+
+    newStudents.forEach((student) => {
+      axios
+        .post("http://localhost:8080/api/students", student)
+        .then(fetchStudents)
+        .catch((err) => console.error("Import error:", err));
+    });
+  };
+
+  reader.readAsArrayBuffer(file);
+};
   return (
     <>
       <AvatarList />
       <Box className="main_cont">
         <Box className="list_cont">
-          <h2 className="class-name">Class List</h2>
+          <Box className="class-header">
+  <h2 className="class-name">Class List</h2>
+  <div className="import-export-buttons">
+    <label className="icon-button" title="Import Excel">
+      <FaFileImport size={24} style={{ cursor: "pointer" }} />
+      <input
+        type="file"
+        accept=".xlsx, .xls"
+        onChange={handleImport}
+        style={{ display: "none" }}
+      />
+    </label>
+
+    <FaFileExport
+      size={24}
+      title="Export to Excel"
+      onClick={handleExportExcel}
+      style={{ cursor: "pointer" }}
+    />
+  </div>
+</Box>
           <Box className="icon_cont">
             {students.length === 0 ? (
               <p className="no_students">No students yet.</p>

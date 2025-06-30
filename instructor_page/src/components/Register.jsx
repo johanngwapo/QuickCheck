@@ -4,6 +4,9 @@ import Logo from "../assets/logo.png";
 import QuickCheck from "../assets/quickcheck_logo.png";
 import GoogleSvg from "../assets/icons8-google.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
+
+import { GoogleLogin } from "@react-oauth/google";
+
 import "./css/login.css";
 import axios from "axios";
 import TeacherImage from "../assets/instructor.jpg"; 

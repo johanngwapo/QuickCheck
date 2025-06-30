@@ -51,3 +51,14 @@
 .new-student-form h3 {
   font-size: 1.2rem;
 }
+
+.class-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.import-export-buttons {
+  display: flex;
+  gap: 10px;
+}
