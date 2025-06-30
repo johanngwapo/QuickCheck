@@ -1,8 +1,11 @@
 package com.june25.june25.Service;
 
+import java.util.List;
+
+import org.springframework.stereotype.Service;
+
 import com.june25.june25.Entity.UserEntity;
 import com.june25.june25.Repository.UserRepository;
-import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
@@ -20,5 +23,9 @@ public class UserService {
 
     public UserEntity findByEmail(String email) {
         return userRepo.findByEmail(email).orElse(null);
+    }
+
+    public List<UserEntity> getAllUsers() {
+        return userRepo.findAll();
     }
 }
