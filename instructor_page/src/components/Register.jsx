@@ -4,6 +4,8 @@ import Logo from "../assets/logo.png";
 import QuickCheck from "../assets/quickcheck_logo.png";
 import GoogleSvg from "../assets/icons8-google.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import QuickCheckLogo from "../assets/logo-withoutbg.png";
+
 
 import { GoogleLogin } from "@react-oauth/google";
 
@@ -50,7 +52,7 @@ const Register = () => {
         className="login-left-bg"
         style={{ backgroundImage: `url(${TeacherImage})` }}
       />
-        <img src={QuickCheck} alt="QuickCheck Logo" className="quickcheck-logo" />
+        <img src={QuickCheckLogo} alt="QuickCheck Logo" className="quickcheck-logo" />
       </div>
 
       <div className="login-right">
@@ -108,10 +110,19 @@ const Register = () => {
                 <button type="submit" className="main-btn">
                   Sign Up
                 </button>
-                <button type="button">
-                  <img src={GoogleSvg} alt="" />
-                  Sign Up with Google
-                </button>
+                <GoogleLogin
+                  onSuccess={(credentialResponse) => {
+                    console.log("Google login success:", credentialResponse);
+                
+                    // Optional: Decode token or fetch user info
+                    // Example decode: https://jwt.io/ or jwt-decode lib
+                    navigate("/landing");
+                  }}
+                  onError={() => {
+                    console.log("Google login failed");
+                    alert("Google login failed!");
+                  }}
+                />
               </div>
             </form>
           </div>

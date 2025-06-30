@@ -5,6 +5,7 @@ import { GoogleLogin } from "@react-oauth/google";
 import TeacherImage from "../assets/instructor.jpg";
 import Logo from "../assets/logo.png";
 import QuickCheck from "../assets/quickcheck_logo.png";
+import QuickCheckLogo from "../assets/logo-withoutbg.png";
 import GoogleSvg from "../assets/icons8-google.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import "./css/login.css";
@@ -24,9 +25,9 @@ const Login = () => {
       setEmail("");
       setPassword("");
 
-      // Redirect based on email
+
       if (email.includes("@admin")) {
-        navigate("/admin"); // Change this to your admin page route
+        navigate("/admin"); 
       } else {
         navigate("/landing");
       }
@@ -45,7 +46,7 @@ const Login = () => {
     className="login-left-bg"
     style={{ backgroundImage: `url(${TeacherImage})` }}
   />
-    <img src={QuickCheck} alt="QuickCheck Logo" className="quickcheck-logo" />
+    <img src={QuickCheckLogo} alt="QuickCheck Logo" className="quickcheck-logo" />
   </div>
 
       <div className="login-right">
