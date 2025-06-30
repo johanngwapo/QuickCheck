@@ -43,7 +43,8 @@ body{
   background-image: url('../assets/teacher.jpeg'); 
   background-size: cover;
   background-position: center;
-  opacity: 0.5; 
+  opacity: 0.4;
+  filter: blur(1.0rem); 
   z-index: 0;
 }
 
