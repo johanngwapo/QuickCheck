@@ -21,7 +21,6 @@ const Login = () => {
 
   axios.post("http://localhost:8080/api/users/login", { email, password })
     .then((res) => {
-      alert("Login successful!");
       setEmail("");
       setPassword("");
 
