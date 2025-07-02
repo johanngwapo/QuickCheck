@@ -33,14 +33,32 @@ const StudentLists = ({ courseId }) => {
   };
 
   const handleCreate = () => {
-    const studentToCreate = { ...newStudent, courseId };
+    if (!newStudent.name || !newStudent.email || !newStudent.studentNo) {
+      alert("All fields are required.");
+      return;
+    }
+
+    const studentToCreate = {
+      name: newStudent.name,
+      email: newStudent.email,
+      studentNo: newStudent.studentNo,
+      course: {
+        courseId: courseId, // ✅ passed from LandingPage → StudentLists
+      },
+    };
+
+    console.log("Posting student data:", studentToCreate); // ✅ verify in console
+
     axios
       .post("http://localhost:8080/api/students", studentToCreate)
       .then(() => {
         fetchStudents();
-        setNewStudent({ name: "", email: "", course: "", studentNo: "" });
+        setNewStudent({ name: "", email: "", studentNo: "" });
       })
-      .catch((err) => console.error("Create error:", err));
+      .catch((err) => {
+        console.error("Create error:", err.response?.data || err.message); // ✅ log full error
+        alert("Failed to add student. See console for details.");
+      });
   };
 
   const handleDelete = (id) => {
@@ -120,7 +138,7 @@ const StudentLists = ({ courseId }) => {
                 </div>
               ) : (
                 <div className="student-info">
-                  <strong>{s.name}</strong> — {s.course}
+                  <strong>{s.name}</strong> — {s.course.courseDesc}
                   <button
                     className="student-button"
                     onClick={() => {
@@ -145,6 +163,7 @@ const StudentLists = ({ courseId }) => {
 
       <Box className="new_student-form">
         <h3>Add New Student</h3>
+
         <input
           className="student-input"
           placeholder="Name"
@@ -153,6 +172,7 @@ const StudentLists = ({ courseId }) => {
             setNewStudent({ ...newStudent, name: e.target.value })
           }
         />
+
         <input
           className="student-input"
           placeholder="Email"
@@ -161,14 +181,7 @@ const StudentLists = ({ courseId }) => {
             setNewStudent({ ...newStudent, email: e.target.value })
           }
         />
-        <input
-          className="student-input"
-          placeholder="Course"
-          value={newStudent.course}
-          onChange={(e) =>
-            setNewStudent({ ...newStudent, course: e.target.value })
-          }
-        />
+
         <input
           className="student-input"
           placeholder="Student No"
@@ -177,6 +190,7 @@ const StudentLists = ({ courseId }) => {
             setNewStudent({ ...newStudent, studentNo: e.target.value })
           }
         />
+
         <button className="student-button" onClick={handleCreate}>
           Add Student
         </button>

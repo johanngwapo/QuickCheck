@@ -20,7 +20,7 @@ public class StudentEntity {
     private String studentNo;
 
     @ManyToOne
-    @JoinColumn(name = "course_id") // FK column in students table
+   @JoinColumn(name = "course_id", referencedColumnName = "courseId")
     private CourseEntity course;
 
     public StudentEntity() {}

@@ -1,6 +1,8 @@
 package com.june25.june25.Service;
 
 import com.june25.june25.Entity.StudentEntity;
+import com.june25.june25.Entity.CourseEntity;
+import com.june25.june25.Repository.CourseRepository;
 import com.june25.june25.Repository.StudentRepository;
 import org.springframework.stereotype.Service;
 
@@ -11,9 +13,15 @@ import java.util.Optional;
 public class StudentService {
 
     private final StudentRepository repository;
+    private final CourseRepository courseRepository;
 
-    public StudentService(StudentRepository repository) {
+    public StudentService(StudentRepository repository, CourseRepository courseRepository) {
         this.repository = repository;
+        this.courseRepository = courseRepository;
+    }
+
+    public List<StudentEntity> getStudentsByCourse(String courseId) {
+        return repository.findByCourse_CourseId(courseId);
     }
 
     public List<StudentEntity> getAllStudents() {
@@ -25,6 +33,15 @@ public class StudentService {
     }
 
     public StudentEntity createStudent(StudentEntity student) {
+        if (student.getCourse() == null || student.getCourse().getCourseId() == null) {
+            throw new RuntimeException("Course ID is required");
+        }
+
+        CourseEntity course = courseRepository.findById(student.getCourse().getCourseId())
+                .orElseThrow(() -> new RuntimeException("Course not found"));
+
+        student.setCourse(course); // ✅ bind actual course entity
+
         return repository.save(student);
     }
 
@@ -32,8 +49,15 @@ public class StudentService {
         return repository.findById(id).map(student -> {
             student.setName(updatedStudent.getName());
             student.setEmail(updatedStudent.getEmail());
-            student.setCourse(updatedStudent.getCourse());
             student.setStudentNo(updatedStudent.getStudentNo());
+
+            // fetch and assign course entity again if changed
+            if (updatedStudent.getCourse() != null) {
+                CourseEntity course = courseRepository.findById(updatedStudent.getCourse().getCourseId())
+                        .orElseThrow(() -> new RuntimeException("Course not found"));
+                student.setCourse(course);
+            }
+
             return repository.save(student);
         }).orElseThrow(() -> new RuntimeException("Student not found"));
     }
