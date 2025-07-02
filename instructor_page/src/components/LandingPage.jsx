@@ -3,6 +3,7 @@ import axios from "axios";
 import QRCode from "./QRCode";
 import AvatarList from "./AvatarList";
 import Box from "@mui/material/Box";
+import IconList from "./IconList";
 import "./css/landingPage.css"; 
 
 const LandingPage = () => {
@@ -65,7 +66,10 @@ const LandingPage = () => {
       <AvatarList />
       <Box className="main_cont">
         <Box className="list_cont">
-          <h2 className="class-name">Class List</h2>
+          <Box className="list_header">
+            <h2 className="class-name">Class List</h2>
+            <IconList />
+          </Box>
           <Box className="icon_cont">
             {students.length === 0 ? (
               <p className="no_students">No students yet.</p>
