@@ -105,24 +105,107 @@ body {
   }
 }
 
+/* app bar styles */
+.main-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 64px); /* Adjust if your AppBar height differs */
+  padding-left: 16px;
+  padding-right: 16px;
+}
+/* END app bar styles */
 
-/*
-ush the New Branch to GitHub:
-To push your new branch to GitHub (the remote repository), run:
+/* create course styles */
+/* Container spacing */
+.create-class-container {
+  padding-top: 32px;
+  padding-bottom: 32px;
+}
 
-bash
-Copy
-Edit
-git push --set-upstream origin <new-branch-name>
-For example, if your branch is feature-xyz, the command will be:
+/* White card container */
+.create-class-box {
+  background-color: #FFFDF6;
+  padding: 24px;
+  box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+  border-radius: 16px;
+  min-height: 550px;
+}
 
-bash
-Copy
-Edit
-git push --set-upstream origin feature-xyz
-This will:
+/* Flex column layout */
+.create-class-layout {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
 
-Push your local branch to the remote GitHub repository.
+/* Course cards container */
+.course-card-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  justify-content: center;
+}
 
-Set the upstream branch so that you can use git push or git pull without specifying the remote and branch name each time.
-*/
+/* Create Course box */
+.create-course-box {
+  width: 240px;
+  height: 130px;
+  padding: 16px;
+  border-radius: 16px;
+  border: 2px dashed #ccc;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  cursor: pointer;
+  transition: border-color 0.3s, background-color 0.3s;
+}
+
+.create-course-box:hover {
+  border-color: #90caf9;
+  background-color: #f5f5f5;
+}
+
+/* Full width alert inside snackbar */
+.snackbar-alert {
+  width: 100%;
+}
+/* END create course styles */
+
+/* course card styles */
+/* Main card styling */
+.course-card {
+  width: 240px;
+  min-height: 130px;
+  cursor: pointer;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  transition: box-shadow 0.3s ease;
+}
+
+.course-card:hover {
+  box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Icon and title row */
+.course-card-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.course-card-icon {
+  margin-right: 8px;
+}
+
+/* Action buttons */
+.course-card-actions {
+  display: flex;
+  justify-content: end;
+  padding: 16px;
+  padding-top: 0;
+}
+/* END course card styles */

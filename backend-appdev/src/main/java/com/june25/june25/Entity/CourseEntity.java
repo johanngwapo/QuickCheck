@@ -11,13 +11,15 @@ public class CourseEntity {
     @Id
     private String courseId;
     private String courseDesc;
+    private String color;
 
     // constructors
     public CourseEntity() {}
     
-    public CourseEntity(String courseId, String courseDesc) {
+    public CourseEntity(String courseId, String courseDesc, String color) {
         this.courseId = courseId;
         this.courseDesc = courseDesc;
+        this.color = color;
     }
 
     // getters & setters
@@ -35,5 +37,13 @@ public class CourseEntity {
 
     public void setCourseDesc(String courseDesc) {
         this.courseDesc = courseDesc;
+    }
+
+    public String getColor() {
+        return color;
+    }
+
+    public void setColor(String color) {
+        this.color = color;
     }
 }

@@ -31,6 +31,10 @@ public class CourseService {
         return courseRepo.save(course);
     }
 
+    public CourseEntity addColor(CourseEntity color) {
+        return courseRepo.save(color);
+    }
+
     public CourseEntity updateCourse(String id, CourseEntity updatedCourse) {
         return courseRepo.findById(id)
                 .map(course -> {
@@ -40,8 +44,12 @@ public class CourseService {
                 .orElse(null);
     }
 
-    public void deleteCourse(String id) {
+    public boolean deleteCourse(String id) {
+        if (!courseRepo.existsById(id)) {
+            return false; // or throw new CourseNotFoundException(id);
+        }
         courseRepo.deleteById(id);
+        return true;
     }
-}
 
+}

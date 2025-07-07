@@ -1,6 +1,7 @@
 package com.june25.june25.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.june25.june25.Entity.CourseEntity;
 import com.june25.june25.Service.CourseService;
@@ -29,9 +30,14 @@ public class CourseController {
         return courseService.getCourseById(id).orElse(null);
     }
 
-    @PostMapping
+    @PostMapping("/color")
     public CourseEntity addCourse(@RequestBody CourseEntity course) {
         return courseService.addCourse(course);
+    }
+
+    @PostMapping
+    public CourseEntity addColor(@RequestBody CourseEntity color) {
+        return courseService.addColor(color);
     }
 
     @PutMapping("/{id}")
@@ -40,7 +46,13 @@ public class CourseController {
     }
 
     @DeleteMapping("/{id}")
-    public void deleteCourse(@PathVariable String id) {
-        courseService.deleteCourse(id);
+    public ResponseEntity<Void> deleteCourse(@PathVariable String id) {
+        boolean deleted = courseService.deleteCourse(id);
+        if (deleted) {
+            return ResponseEntity.noContent().build(); // 204 No Content
+        } else {
+            return ResponseEntity.notFound().build(); // 404 Not Found
+        }
     }
+
 }

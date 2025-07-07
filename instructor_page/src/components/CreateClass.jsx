@@ -1,88 +1,225 @@
-import React, { useState } from 'react';
-import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
+// src/CreateClass.jsx
+import React, { useState, useEffect } from "react";
+import {
+  Box,
+  Typography,
+  Button,
+  TextField,
+  Snackbar,
+  Alert,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Container,
+} from "@mui/material";
+
+import BaseLayout from "./BaseLayout";
+import CourseCard from "./CourseCard";
+import { API_BASE_URL } from "./config";
 
 const CreateClass = ({ courses, onCourseCreated, onSelectCourse }) => {
-  const [newCourse, setNewCourse] = useState({ courseId: '', courseDesc: '' });
+  const [newCourse, setNewCourse] = useState({ courseId: "", courseDesc: "", color: "#1976d2" }); // 🟢 Add color
+  const [isLoading, setIsLoading] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [feedback, setFeedback] = useState({
+    open: false,
+    message: "",
+    severity: "success",
+  });
 
-  const handleCreateCourse = () => {
-    if (!newCourse.courseId || !newCourse.courseDesc) return;
+  const isCourseValid = (course) =>
+    course.courseId.trim() !== "" && course.courseDesc.trim() !== "";
 
-    fetch("http://localhost:8080/api/courses", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(newCourse),
-    })
-      .then((res) => res.json())
-      .then(() => {
-        onCourseCreated(); // refresh course list
-        setNewCourse({ courseId: '', courseDesc: '' }); // reset form
-      })
-      .catch((err) => console.error("Error creating course:", err));
+  const handleChange = (field) => (e) =>
+    setNewCourse((prev) => ({ ...prev, [field]: e.target.value }));
+
+  const handleOpenModal = () => setIsModalOpen(true);
+  const handleCloseModal = () => {
+    setIsModalOpen(false);
+    setNewCourse({ courseId: "", courseDesc: "", color: "#1976d2" }); // 🟢 Reset color too
   };
 
-  return (
-    <Box display="flex" flexDirection="column" gap={3} p={2}>
-      
-      {/* Existing Course Cards */}
-      <Box display="flex" flexWrap="wrap" gap={2}>
-        {courses.map((course) => (
-          <Box
-            key={course.courseId}
-            onClick={() => onSelectCourse(course)}
-            sx={{
-              width: 240,
-              height: 130,
-              p: 2,
-              borderRadius: 2,
-              boxShadow: 1,
-              bgcolor: '#e3f2fd',
-              cursor: 'pointer',
-              '&:hover': { bgcolor: '#bbdefb' },
-            }}
-          >
-            <Typography variant="h6">{course.courseId}</Typography>
-            <Typography variant="body2">{course.courseDesc}</Typography>
-          </Box>
-        ))}
-      </Box>
+  const handleCreateCourse = async () => {
+    if (!isCourseValid(newCourse)) {
+      setFeedback({
+        open: true,
+        message: "Both fields are required.",
+        severity: "error",
+      });
+      return;
+    }
 
-      {/* Create New Course Form */}
-      <Box
-        sx={{
-          width: 260,
-          p: 2,
-          border: '2px dashed #ccc',
-          borderRadius: 2,
-        }}
-      >
-        <Typography variant="body1" mb={1}>Create a New Course</Typography>
-        <TextField
-          fullWidth
-          label="Course ID"
-          value={newCourse.courseId}
-          onChange={(e) => setNewCourse({ ...newCourse, courseId: e.target.value })}
-          margin="dense"
-        />
-        <TextField
-          fullWidth
-          label="Course Description"
-          value={newCourse.courseDesc}
-          onChange={(e) => setNewCourse({ ...newCourse, courseDesc: e.target.value })}
-          margin="dense"
-        />
-        <Button
-          variant="contained"
-          fullWidth
-          onClick={handleCreateCourse}
-          sx={{ mt: 1 }}
-        >
-          Create Course
-        </Button>
-      </Box>
-    </Box>
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/courses`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newCourse),
+      });
+
+      if (!response.ok) throw new Error(await response.text());
+
+      await response.json();
+      onCourseCreated();
+      setFeedback({
+        open: true,
+        message: "Course created successfully!",
+        severity: "success",
+      });
+      handleCloseModal();
+    } catch (error) {
+      console.error("Error creating course:", error);
+      setFeedback({
+        open: true,
+        message: error.message || "Error creating course.",
+        severity: "error",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleCloseSnackbar = () => {
+    setFeedback((prev) => ({ ...prev, open: false }));
+  };
+
+  const handleDeleteCourse = async (courseId) => {
+    if (!window.confirm("Are you sure you want to delete this course?")) return;
+
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API_BASE_URL}/api/courses/${courseId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) throw new Error(await response.text());
+
+      onCourseCreated(); // Refresh course list
+      setFeedback({
+        open: true,
+        message: "Course deleted successfully!",
+        severity: "success",
+      });
+    } catch (error) {
+      console.error("Error deleting course:", error);
+      setFeedback({
+        open: true,
+        message: error.message || "Error deleting course.",
+        severity: "error",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (isModalOpen) window.scrollTo(0, 0);
+  }, [isModalOpen]);
+
+  return (
+    <BaseLayout>
+      <Container maxWidth="lg" className="create-class-container">
+        <Box className="create-class-box">
+          <Box className="create-class-layout">
+            <Box className="course-card-container">
+              {courses.map((course) => (
+                <CourseCard
+                  key={course.courseId}
+                  course={course}
+                  onSelect={onSelectCourse}
+                  onDelete={handleDeleteCourse}
+                />
+              ))}
+              <Box onClick={handleOpenModal} className="create-course-box">
+                <Typography color="primary">+ Create Course</Typography>
+              </Box>
+            </Box>
+
+            <Dialog
+              open={isModalOpen}
+              onClose={handleCloseModal}
+              maxWidth="xs"
+              fullWidth
+            >
+              <DialogTitle>Create a New Course</DialogTitle>
+              <DialogContent>
+                <Box
+                  component="form"
+                  onSubmit={(e) => {
+                    e.preventDefault();
+                    handleCreateCourse();
+                  }}
+                >
+                  <TextField
+                    autoFocus
+                    fullWidth
+                    label="Course ID"
+                    value={newCourse.courseId}
+                    onChange={handleChange("courseId")}
+                    margin="dense"
+                  />
+                  <TextField
+                    fullWidth
+                    label="Course Description"
+                    value={newCourse.courseDesc}
+                    onChange={handleChange("courseDesc")}
+                    margin="dense"
+                  />
+
+                  {/* 🔵 Color Picker Field */}
+                  <Box mt={2} mb={1}>
+                    <label style={{ fontSize: 14, display: "block", marginBottom: 4 }}>
+                      Choose Card Color:
+                    </label>
+                    <input
+                      type="color"
+                      value={newCourse.color}
+                      onChange={handleChange("color")}
+                      style={{
+                        width: "100%",
+                        height: "40px",
+                        border: "none",
+                        background: "transparent",
+                        cursor: "pointer",
+                      }}
+                    />
+                  </Box>
+                </Box>
+              </DialogContent>
+              <DialogActions>
+                <Button onClick={handleCloseModal} disabled={isLoading}>
+                  Cancel
+                </Button>
+                <Button
+                  onClick={handleCreateCourse}
+                  disabled={isLoading}
+                  variant="contained"
+                >
+                  {isLoading ? "Creating..." : "Create"}
+                </Button>
+              </DialogActions>
+            </Dialog>
+
+            {/* Snackbar */}
+            <Snackbar
+              open={feedback.open}
+              autoHideDuration={3000}
+              onClose={handleCloseSnackbar}
+              anchorOrigin={{ vertical: "top", horizontal: "center" }}
+            >
+              <Alert
+                severity={feedback.severity}
+                onClose={handleCloseSnackbar}
+                className="snackbar-alert"
+              >
+                {feedback.message}
+              </Alert>
+            </Snackbar>
+          </Box>
+        </Box>
+      </Container>
+    </BaseLayout>
   );
 };
 
