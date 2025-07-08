@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { GoogleLogin } from "@react-oauth/google";
 import TeacherImage from "../assets/instructor.jpg";
 import Logo from "../assets/logo.png";
 import QuickCheck from "../assets/quickcheck_logo.png";
+import QuickCheckLogo from "../assets/logo-withoutbg.png";
 import GoogleSvg from "../assets/icons8-google.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import "./css/login.css";
@@ -20,13 +21,12 @@ const Login = () => {
 
   axios.post("http://localhost:8080/api/users/login", { email, password })
     .then((res) => {
-      alert("Login successful!");
       setEmail("");
       setPassword("");
 
-      // Redirect based on email
+
       if (email.includes("@admin")) {
-        navigate("/admin"); // Change this to your admin page route
+        navigate("/admin"); 
       } else {
         navigate("/landing");
       }
@@ -45,7 +45,7 @@ const Login = () => {
     className="login-left-bg"
     style={{ backgroundImage: `url(${TeacherImage})` }}
   />
-    <img src={QuickCheck} alt="QuickCheck Logo" className="quickcheck-logo" />
+    <img src={QuickCheckLogo} alt="QuickCheck Logo" className="quickcheck-logo" />
   </div>
 
       <div className="login-right">
@@ -92,10 +92,19 @@ const Login = () => {
 
               <div className="login-center-buttons">
                 <button type="submit" className="main-btn">Log In</button>
-                <button type="button">
-                  <img src={GoogleSvg} alt="Google logo" />
-                  Log In with Google
-                </button>
+                <GoogleLogin
+  onSuccess={(credentialResponse) => {
+    console.log("Google login success:", credentialResponse);
+
+    // Optional: Decode token or fetch user info
+    // Example decode: https://jwt.io/ or jwt-decode lib
+    navigate("/landing");
+  }}
+  onError={() => {
+    console.log("Google login failed");
+    alert("Google login failed!");
+  }}
+/>
               </div>
             </form>
           </div>
