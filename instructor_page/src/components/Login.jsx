@@ -82,29 +82,22 @@ const Login = () => {
                 )}
               </div>
 
-              <div className="login-center-options">
-                <div className="remember-div">
-                  <input type="checkbox" id="remember-checkbox" />
-                  <label htmlFor="remember-checkbox">Remember for 30 days</label>
-                </div>
-                <a href="#" className="forgot-pass-link">Forgot password?</a>
-              </div>
-
               <div className="login-center-buttons">
                 <button type="submit" className="main-btn">Log In</button>
                 <GoogleLogin
-  onSuccess={(credentialResponse) => {
-    console.log("Google login success:", credentialResponse);
+                  onSuccess={(credentialResponse) => {
+                    console.log("Google login success:", credentialResponse);
 
-    // Optional: Decode token or fetch user info
-    // Example decode: https://jwt.io/ or jwt-decode lib
-    navigate("/landing");
-  }}
-  onError={() => {
-    console.log("Google login failed");
-    alert("Google login failed!");
-  }}
-/>
+                      // Optional: Decode token or fetch user info
+                      // Example decode: https://jwt.io/ or jwt-decode lib
+                      navigate("/landing");
+                    }}
+                      onError={() => {
+                      console.log("Google login failed");
+                      alert("Google login failed!");
+                    }}
+                    />
+                    
               </div>
             </form>
           </div>
