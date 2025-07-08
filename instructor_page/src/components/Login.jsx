@@ -84,6 +84,7 @@ const Login = () => {
 
               <div className="login-center-buttons">
                 <button type="submit" className="main-btn">Log In</button>
+                
                 <GoogleLogin
                   onSuccess={(credentialResponse) => {
                     console.log("Google login success:", credentialResponse);
