@@ -12,10 +12,8 @@ import SettingsIcon from "@mui/icons-material/Settings";
 import CancelIcon from "@mui/icons-material/Cancel";
 import DownloadIcon from "@mui/icons-material/Download";
 import UploadIcon from "@mui/icons-material/Upload";
-import PlayCircleIcon from "@mui/icons-material/PlayCircle";
-import StopCircleIcon from "@mui/icons-material/StopCircle";
-import { API_BASE_URL } from "./config";
-
+import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+ 
 const LandingPage = () => {
   const [courses, setCourses] = useState([]);
   const [loadingCourses, setLoadingCourses] = useState(true);
@@ -24,12 +22,11 @@ const LandingPage = () => {
   const [showActions, setShowActions] = useState(false);
   const fileInputRef = useRef(null);
   const studentTableRef = useRef(null);
-  const [activeSession, setActiveSession] = useState(null);
-
+ 
   useEffect(() => {
     fetchCourses();
   }, []);
-
+ 
   const fetchCourses = () => {
     fetch("http://localhost:8080/api/courses")
       .then((res) => res.json())
@@ -39,8 +36,9 @@ const LandingPage = () => {
       })
       .catch((err) => console.error("Error fetching courses:", err));
   };
-
+ 
   if (loadingCourses) return <p>Loading...</p>;
+ 
   if (!selectedCourse)
     return (
       <CreateClass
@@ -49,35 +47,7 @@ const LandingPage = () => {
         onSelectCourse={setSelectedCourse}
       />
     );
-
-  const startSession = async () => {
-    const today = new Date().toISOString().split("T")[0];
-    const payload = {
-      sessionDate: today,
-    };
-    try {
-      const res = await fetch(`${API_BASE_URL}/api/sessions`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "X-Course-Id": selectedCourse.courseId, // 👈 header, not in body
-        },
-        body: JSON.stringify(payload),
-      });
-
-      if (!res.ok) throw new Error("Session creation failed");
-      const session = await res.json();
-      setActiveSession(session);
-    } catch (err) {
-      console.error("Start session failed:", err);
-      alert("Failed to start session.");
-    }
-  };
-
-  const endSession = () => {
-    setActiveSession(null);
-  };
-
+ 
   return (
     <>
       <AvatarList />
@@ -87,22 +57,8 @@ const LandingPage = () => {
             <Typography variant="h5" className="class-name">
               {selectedCourse.courseDesc}
             </Typography>
-            {/* Add Student button here */}
+ 
             <Box display="flex" gap={1} alignItems="center">
-              <Tooltip title={activeSession ? "End Session" : "Start Session"}>
-                <IconButton
-                  onClick={activeSession ? endSession : startSession}
-                  sx={{
-                    bgcolor: activeSession ? "error.main" : "primary.main",
-                    color: "white",
-                    "&:hover": {
-                      bgcolor: activeSession ? "error.dark" : "primary.dark",
-                    },
-                  }}
-                >
-                  {activeSession ? <StopCircleIcon /> : <PlayCircleIcon />}
-                </IconButton>
-              </Tooltip>
               <Tooltip title="Add Student">
                 <IconButton
                   onClick={() => setAddModalOpen(true)}
@@ -115,7 +71,7 @@ const LandingPage = () => {
                   <PersonAddIcon />
                 </IconButton>
               </Tooltip>
-
+ 
               {!showActions ? (
                 <Tooltip title="Show Actions">
                   <IconButton
@@ -143,7 +99,7 @@ const LandingPage = () => {
                   </IconButton>
                 </Tooltip>
               )}
-
+ 
               <input
                 type="file"
                 accept=".csv,.xlsx"
@@ -151,7 +107,7 @@ const LandingPage = () => {
                 onChange={(e) => studentTableRef.current.handleImport(e)}
                 style={{ display: "none" }}
               />
-
+ 
               <Tooltip title="Import">
                 <IconButton
                   onClick={() => fileInputRef.current.click()}
@@ -164,7 +120,7 @@ const LandingPage = () => {
                   <DownloadIcon />
                 </IconButton>
               </Tooltip>
-
+ 
               <Tooltip title="Export">
                 <IconButton
                   onClick={() => studentTableRef.current.handleExport()}
@@ -177,10 +133,22 @@ const LandingPage = () => {
                   <UploadIcon />
                 </IconButton>
               </Tooltip>
+ 
+              <Tooltip title="Back to Create Class">
+                <IconButton
+                  onClick={() => setSelectedCourse(null)}
+                  sx={{
+                    bgcolor: "warning.main",
+                    color: "white",
+                    "&:hover": { bgcolor: "warning.dark" },
+                  }}
+                >
+                  <ArrowBackIcon />
+                </IconButton>
+              </Tooltip>
             </Box>
           </Box>
-
-          {/* Pass modal open state & close handler */}
+ 
           <StudentTable
             ref={studentTableRef}
             courseId={selectedCourse.courseId}
@@ -188,16 +156,11 @@ const LandingPage = () => {
             closeAddModal={() => setAddModalOpen(false)}
             showActions={showActions}
             setShowActions={setShowActions}
-            activeSession={activeSession}
           />
-        </Box>
-        <Box className="qr_cont">
-          <QRCode />
-          <h2 className="qr_name">Class QR Code</h2>
         </Box>
       </Box>
     </>
   );
 };
-
+ 
 export default LandingPage;

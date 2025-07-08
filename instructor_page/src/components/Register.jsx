@@ -44,7 +44,7 @@ const handleRegister = async (e) => {
 
     setTimeout(() => {
       navigate("/login");
-    }, 1500);
+    }, 1000);
   } catch (error) {
     console.error("Registration failed:", error);
     toast.error("Registration failed. Please try again.");
