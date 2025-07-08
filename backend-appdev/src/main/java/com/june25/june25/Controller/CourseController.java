@@ -30,12 +30,12 @@ public class CourseController {
         return courseService.getCourseById(id).orElse(null);
     }
 
-    @PostMapping("/color")
+    @PostMapping
     public CourseEntity addCourse(@RequestBody CourseEntity course) {
         return courseService.addCourse(course);
     }
 
-    @PostMapping
+    @PostMapping("/color")
     public CourseEntity addColor(@RequestBody CourseEntity color) {
         return courseService.addColor(color);
     }

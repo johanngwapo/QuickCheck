@@ -25,7 +25,14 @@ import * as XLSX from "xlsx";
 
 const StudentTable = forwardRef(
   (
-    { courseId, openAddModal, closeAddModal, showActions, setShowActions },
+    {
+      courseId,
+      openAddModal,
+      closeAddModal,
+      showActions,
+      setShowActions,
+      activeSession,
+    },
     ref
   ) => {
     //for adding students
@@ -197,9 +204,18 @@ const StudentTable = forwardRef(
               <TableHead>
                 <TableRow>
                   <TableCell>Name</TableCell>
-                  <TableCell>Email</TableCell>
-                  <TableCell>Student No</TableCell>
-                  <TableCell>Course</TableCell>
+                  {activeSession ? (
+                    <>
+                      <TableCell>Status</TableCell>
+                      <TableCell>Session Date</TableCell>
+                    </>
+                  ) : (
+                    <>
+                      <TableCell>Email</TableCell>
+                      <TableCell>Student No</TableCell>
+                      <TableCell>Course</TableCell>
+                    </>
+                  )}
                   <TableCell align="right">Actions</TableCell>
                 </TableRow>
               </TableHead>
@@ -207,77 +223,30 @@ const StudentTable = forwardRef(
                 {students
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((s) => (
-                    <TableRow key={s.id} hover role="checkbox" tabIndex={-1}>
-                      {editingStudent === s.id ? (
+                    <TableRow key={s.id}>
+                      <TableCell>{s.name}</TableCell>
+                      {activeSession ? (
                         <>
-                          <TableCell>
-                            <TextField
-                              value={editedData.name}
-                              onChange={(e) =>
-                                setEditedData({
-                                  ...editedData,
-                                  name: e.target.value,
-                                })
-                              }
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <TextField
-                              value={editedData.email}
-                              onChange={(e) =>
-                                setEditedData({
-                                  ...editedData,
-                                  email: e.target.value,
-                                })
-                              }
-                            />
-                          </TableCell>
-                          <TableCell>
-                            <TextField
-                              value={editedData.studentNo}
-                              onChange={(e) =>
-                                setEditedData({
-                                  ...editedData,
-                                  studentNo: e.target.value,
-                                })
-                              }
-                            />
-                          </TableCell>
-                          <TableCell>{s.course.courseDesc}</TableCell>
-                          <TableCell align="right">
-                            <Button onClick={() => handleUpdate(s.id)}>
-                              Save
-                            </Button>
-                            <Button onClick={() => setEditingStudent(null)}>
-                              Cancel
-                            </Button>
-                          </TableCell>
+                          <TableCell>{s.attendance?.status || "N/A"}</TableCell>
+                          <TableCell>{activeSession.sessionDate}</TableCell>
                         </>
                       ) : (
                         <>
-                          <TableCell>{s.name}</TableCell>
                           <TableCell>{s.email}</TableCell>
                           <TableCell>{s.studentNo}</TableCell>
                           <TableCell>{s.course.courseDesc}</TableCell>
-                          <TableCell align="right">
-                            {showActions && (
-                              <>
-                                <Button
-                                  onClick={() => {
-                                    setEditingStudent(s.id);
-                                    setEditedData(s);
-                                  }}
-                                >
-                                  Edit
-                                </Button>
-                                <Button onClick={() => handleDelete(s.id)}>
-                                  Delete
-                                </Button>
-                              </>
-                            )}
-                          </TableCell>
                         </>
                       )}
+                      <TableCell align="right">
+                        {showActions && (
+                          <>
+                            <Button onClick={() => handleEdit(s)}>Edit</Button>
+                            <Button onClick={() => handleDelete(s.id)}>
+                              Delete
+                            </Button>
+                          </>
+                        )}
+                      </TableCell>
                     </TableRow>
                   ))}
               </TableBody>

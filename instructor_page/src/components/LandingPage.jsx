@@ -11,7 +11,10 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import SettingsIcon from "@mui/icons-material/Settings";
 import CancelIcon from "@mui/icons-material/Cancel";
 import DownloadIcon from "@mui/icons-material/Download";
-import UploadIcon from '@mui/icons-material/Upload';
+import UploadIcon from "@mui/icons-material/Upload";
+import PlayCircleIcon from "@mui/icons-material/PlayCircle";
+import StopCircleIcon from "@mui/icons-material/StopCircle";
+import { API_BASE_URL } from "./config";
 
 const LandingPage = () => {
   const [courses, setCourses] = useState([]);
@@ -21,6 +24,7 @@ const LandingPage = () => {
   const [showActions, setShowActions] = useState(false);
   const fileInputRef = useRef(null);
   const studentTableRef = useRef(null);
+  const [activeSession, setActiveSession] = useState(null);
 
   useEffect(() => {
     fetchCourses();
@@ -46,6 +50,34 @@ const LandingPage = () => {
       />
     );
 
+  const startSession = async () => {
+    const today = new Date().toISOString().split("T")[0];
+    const payload = {
+      sessionDate: today,
+    };
+    try {
+      const res = await fetch(`${API_BASE_URL}/api/sessions`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Course-Id": selectedCourse.courseId, // 👈 header, not in body
+        },
+        body: JSON.stringify(payload),
+      });
+
+      if (!res.ok) throw new Error("Session creation failed");
+      const session = await res.json();
+      setActiveSession(session);
+    } catch (err) {
+      console.error("Start session failed:", err);
+      alert("Failed to start session.");
+    }
+  };
+
+  const endSession = () => {
+    setActiveSession(null);
+  };
+
   return (
     <>
       <AvatarList />
@@ -57,6 +89,20 @@ const LandingPage = () => {
             </Typography>
             {/* Add Student button here */}
             <Box display="flex" gap={1} alignItems="center">
+              <Tooltip title={activeSession ? "End Session" : "Start Session"}>
+                <IconButton
+                  onClick={activeSession ? endSession : startSession}
+                  sx={{
+                    bgcolor: activeSession ? "error.main" : "primary.main",
+                    color: "white",
+                    "&:hover": {
+                      bgcolor: activeSession ? "error.dark" : "primary.dark",
+                    },
+                  }}
+                >
+                  {activeSession ? <StopCircleIcon /> : <PlayCircleIcon />}
+                </IconButton>
+              </Tooltip>
               <Tooltip title="Add Student">
                 <IconButton
                   onClick={() => setAddModalOpen(true)}
@@ -142,6 +188,7 @@ const LandingPage = () => {
             closeAddModal={() => setAddModalOpen(false)}
             showActions={showActions}
             setShowActions={setShowActions}
+            activeSession={activeSession}
           />
         </Box>
         <Box className="qr_cont">
