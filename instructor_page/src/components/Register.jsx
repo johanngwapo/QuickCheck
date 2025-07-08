@@ -5,7 +5,7 @@ import QuickCheck from "../assets/quickcheck_logo.png";
 import GoogleSvg from "../assets/icons8-google.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
 import QuickCheckLogo from "../assets/logo-withoutbg.png";
-
+import { toast } from "react-toastify";
 
 import { GoogleLogin } from "@react-oauth/google";
 
@@ -22,12 +22,15 @@ const Register = () => {
   const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleRegister = async (e) => {
+const handleRegister = async (e) => {
   e.preventDefault();
+
   if (password !== confirmPassword) {
-    alert("Passwords do not match!");
+    toast.warning("Passwords do not match!");
     return;
   }
+
+  toast.info("Registering...");
 
   try {
     const response = await axios.post("http://localhost:8080/api/users/register", {
@@ -37,11 +40,14 @@ const Register = () => {
     });
 
     console.log("Registered user:", response.data);
-    alert("Registration successful!");
-    navigate("/login");
+    toast.success("Registration successful!");
+
+    setTimeout(() => {
+      navigate("/login");
+    }, 1500);
   } catch (error) {
     console.error("Registration failed:", error);
-    alert("Registration failed. Please try again.");
+    toast.error("Registration failed. Please try again.");
   }
 };
 

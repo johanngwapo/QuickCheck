@@ -5,6 +5,8 @@ import Register from "./components/Register";
 import Admin from './components/Admin';
 import { GoogleOAuthProvider } from "@react-oauth/google";
 import StickyHeadTable from './components/StudentGroup';
+import { ToastContainer } from 'react-toastify';
+import GlobalToast from './components/GlobalToast';
 
 const clientId = "1086377487635-p5pnpc11gkshsr8rjh87eqgrpg18tn8j.apps.googleusercontent.com";
 
@@ -22,6 +24,7 @@ const App = () => {
           {/* Add more routes as needed */}
           <Route path="*" element={<div>404 - Page Not Found</div>} />
         </Routes>
+        <ToastContainer />
       </BrowserRouter>
     </GoogleOAuthProvider>
   );

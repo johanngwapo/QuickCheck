@@ -8,6 +8,7 @@ import QuickCheck from "../assets/quickcheck_logo.png";
 import QuickCheckLogo from "../assets/logo-withoutbg.png";
 import GoogleSvg from "../assets/icons8-google.svg";
 import { FaEye, FaEyeSlash } from "react-icons/fa6";
+import { toast } from "react-toastify";
 import "./css/login.css";
 
 const Login = () => {
@@ -19,20 +20,25 @@ const Login = () => {
   const handleLogin = (e) => {
   e.preventDefault();
 
+  toast.info("Logging in...");
+
   axios.post("http://localhost:8080/api/users/login", { email, password })
     .then((res) => {
       setEmail("");
       setPassword("");
 
+      toast.success("Login successful!");
 
-      if (email.includes("@admin")) {
-        navigate("/admin"); 
-      } else {
-        navigate("/landing");
-      }
+      setTimeout(() => {
+        if (email.includes("@admin")) {
+          navigate("/admin");
+        } else {
+          navigate("/landing");
+        }
+      }, 1500);
     })
     .catch((err) => {
-      alert("Invalid credentials!");
+      toast.error("Invalid credentials!");
       console.error("Login error:", err);
     });
 };
