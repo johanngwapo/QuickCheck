@@ -35,7 +35,7 @@ const Login = () => {
         } else {
           navigate("/landing");
         }
-      }, 1000);
+      }, 500);
     })
     .catch((err) => {
       toast.error("Invalid credentials!");
